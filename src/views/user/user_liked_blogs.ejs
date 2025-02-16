@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog-Dekho</title>
+</head>
+<link rel="stylesheet" href="/css/user_liked_blogs.css">
+<link rel="stylesheet" href="/css/global.css">
+
+<body>
+    <div id="overlay"></div>
+    <%- include('../components/navbar.ejs') %>
+    <div class="liked-blogs-wrapper" >
+        <form action="/search_blog" method="get" id="search-blog">
+            <input type="text" name="pattern" id="search-value" placeholder="Search">
+            <button id='search-btn' type="submit"><img id='search-logo' src="/img/search.svg"></button>
+        </form>
+        <h1 class="title"><i>Liked Posts</i></h1>
+        <div id="blogs" class="grid">
+            <% responseJson.blogs.forEach(channel => { %>
+                <div class="liked-blogs">
+                    <%- include('../components/blog_listing.ejs', {blog: channel}) %>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+</body>
+</html>

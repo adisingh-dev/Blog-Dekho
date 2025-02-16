@@ -1,0 +1,29 @@
+@font-face {
+    font-family: futura;
+    src: url('/fonts/futura.ttf');
+}
+
+html{
+    padding: 0;
+}
+
+body{
+    overflow-x: hidden;
+    margin: 0;
+    background-color: #000C1F;
+    overflow-y: auto;
+}
+
+*{
+    font-family: futura;
+    color: white;
+    box-sizing: border-box;
+}
+
+button{
+    cursor: pointer;
+}
+
+a{
+    text-decoration: none;
+}

@@ -1,0 +1,29 @@
+<!-- Registeration Form -->
+
+<!-- styles -->
+<link rel="stylesheet" href="/css/user_registeration_form.css">
+<link rel="stylesheet" href="/css/global.css">
+
+<div id="overlay"></div>
+<div class="user-registeration-form-container">
+    <img id="blogdekho" src="/img/blogdekho.png" alt="">
+    <form id="user-registeration-form">
+        <h1 class="user-registeration-form-heading">User Registeration</h1>
+        <input type="text" name="username" id="username" placeholder="Username" required>
+        <input type="email" name="email" id="email" placeholder="Email ID" required>
+        <input type="text" name="password" id="password" placeholder="Password" required>
+        <input type="text" name="confirmpassword" id="confirm-password" placeholder="Confirm Password" required>
+        <div class="actions">
+            <button type="reset" id="reset-button">Reset</button>
+            <button type="submit" id="submit-button">Register</button>
+        </div>
+        <p id="verdict"></p>
+        <div class="text-to-login">
+            <p class="registered-user">Registered Already?</p>
+            <a href="/login" class="login-here">Login</a>
+        </div>
+    </form>
+</div>
+
+<script src="/js/axios.min.js"></script>
+<script src="/js/user_registration_form.js" type="text/javascript"></script>

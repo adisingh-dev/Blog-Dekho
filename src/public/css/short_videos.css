@@ -1,0 +1,44 @@
+html{
+    scroll-snap-type: y mandatory;
+    scroll-padding-top: .8rem;
+    overflow-y: scroll;
+}
+
+section{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+}
+
+.container{
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    scroll-behavior: smooth;
+    height: 95vh;
+    width: 27vw;
+    border-radius: 10px;
+    background-color: gray;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.short-vids-header{
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+#back-arrow{
+    border-radius: 10rem;
+    padding: .4rem;
+    width: 1.9rem;
+    color: white;
+    background-color: black;
+    border: 1px solid black;
+    cursor: pointer;
+    margin: 1rem;;
+}

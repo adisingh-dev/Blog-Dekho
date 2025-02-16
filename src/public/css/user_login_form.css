@@ -1,0 +1,112 @@
+#overlay{
+    width: 100vw;
+    height:100vh;
+    background-color:black;
+    overflow:none;
+    z-index: 100;
+    position:absolute;
+    opacity: .8;
+    background-image: url('/assets/img/loader-small.svg');
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-position: center;
+}
+
+.user-login-form-container{
+    display: flex;
+    background-color: white;
+}
+
+#blogdekho{
+    width: 50vw;
+    margin: 0;
+}
+
+#user-login-form{
+    width: 50vw;
+    background-color: white;
+    display: flex;
+    background-color: white;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 1.3rem;
+    width: 27rem;
+    height: 30rem;
+    padding: 1rem;
+    margin: auto;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+    background-color: #192435;
+    border-radius: 10px;
+}
+
+.user-login-form-heading{
+    text-align: center;
+    margin: 0;
+    /* margin-bottom:  */
+}
+
+input{
+    color: black;
+    border:1.2px solid black;
+    border-radius: 10px;
+    outline: none;
+    width: 100%;
+    color: white;
+    font-size: .8rem;
+    background: transparent;
+    margin-top: .6rem;
+    border: 2px solid #385480;
+    padding: .8rem;
+}
+
+.actions{
+    width: 5rem;
+    padding: .3rem;
+    margin: 0;
+    color: white;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    gap: .5rem;
+    width: 100%;
+}
+
+#reset-button, #submit-button{
+    color: black;
+    width: 7rem;
+    padding: .3rem;
+    color: white;
+    background-color: #0a4eca;
+    border: 1px solid #0a4eca;
+    border-radius: 3px;
+}
+
+#reset-button{
+    background-color: #0d0f72;
+    border: 1px solid #0d0f72;
+}
+
+.text-to-register{
+    display: flex;
+    align-items: center;
+    margin: 0;
+    justify-content: center;
+}
+
+.new-user, .register-here{
+    font-size: .8rem;
+}
+
+.register-here{
+    margin-left: .5rem;
+}
+
+.error-msg{
+    margin: 0;
+    text-align: center;
+    font-size: .8rem;
+    height: .8rem;
+    color: #ff2b3f;
+}

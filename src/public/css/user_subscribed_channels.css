@@ -1,0 +1,56 @@
+#overlay{
+    width: 100vw;
+    height:100vh;
+    background-color:black;
+    overflow:none;
+    z-index: 100;
+    position:absolute;
+    opacity: .8;
+    background-image: url('/assets/img/loader-small.svg');
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-position: center;
+}
+
+#all-subscriptions{
+    background:  rgba(40, 123, 200, .2) !important;
+}
+
+.subscriptions-wrapper{
+    display: flex;margin-top:3rem;background-color: transparent;gap: 2rem;
+}
+
+.sub-wrapper{
+    display: flex;flex-direction:column;align-items: center;background-color: transparent;height: fit-content;gap:1rem;padding:0 1.6rem;width: 100%;justify-content: space-between;
+}
+
+.title{
+    font-size: 1.5rem;margin-bottom: 1rem;height: fit-content;text-align: left;width: 100%;margin:0;
+}
+
+.subscription-details{
+    display: flex;align-items: center;background-color: transparent;height: fit-content;gap:1rem;
+}
+
+.inner-icon{
+    width:10rem;background-color:blue;height:10rem;border-radius:100%;
+}
+
+.preview{
+    width:100%;border-radius:100%;height:100%;object-fit: cover;
+}
+
+.channel-detail{
+    display: flex;flex-direction: column;
+}
+
+.channel-name{
+    margin: 0;
+}
+
+.subscriber-count{
+    margin: 0;font-size: .6rem;
+}
+

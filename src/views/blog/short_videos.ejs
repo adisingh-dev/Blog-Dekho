@@ -1,0 +1,56 @@
+<html id="short-vids-container">
+    <div class="short-vids-header">
+        <button id="back-arrow"> < </button>
+    </div>
+    <section id='container' blogId="<%= blog.id %>">
+        <iframe id="short-video-container"  class="container"
+            src="https://www.youtube.com/embed"
+            frameborder="0" allowfullscreen>
+        </iframe>
+        <button id="btn">Watch on YouTube</button>
+
+        <div class="container">short1</div>
+        <div class="container">short2</div>
+        <div class="container">short3</div>
+        <div class="container">short4</div>
+        <div class="container">short5</div>
+        <div class="container">short6</div>
+    </section>
+</html>
+
+<script src="/js/global.js"></script>
+<script src="/js/axios.min.js"></script>
+<script>
+    let i = 1;
+    document.addEventListener('DOMContentLoaded', async () => {
+        let container = document.querySelector('#container');
+        let blogId = container.getAttribute('blogId');
+        try {
+            let res = await axios.post(`/blogs/${blogId}/shorts`);
+            res = res.data;
+            
+            let shortVidContainer = document.getElementById('short-video-container');
+            shortVidContainer.src = `${res.vidBaseUrl}/${res.videoids[0]}`;
+            const btn = document.getElementById('btn');
+            container.addEventListener('click', e => {
+                    // shortVidContainer.src = `${res.vidBaseUrl}/${res.videoids[i]}`;
+                    btn.onclick = window.open(`https://www.youtube.com/shorts/${res.videoids[i]}`, '_blank');
+                    i = ( Math.floor(Math.random() + (res.videoids.length + 1) ) );
+                });
+
+        } catch (error) {
+            
+            
+        }
+    });
+    // let container = document.querySelectorAll('.section');
+    // container.forEach(box => {
+    //     box.addEventListener('scroll', e => {
+    //         console.log('scroll');
+            
+    //     });
+    // })
+    
+</script>
+<!-- <link rel="stylesheet" href="/css/global.css"> -->
+<link rel="stylesheet" href="/css/short_videos.css">

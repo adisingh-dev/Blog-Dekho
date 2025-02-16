@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<!-- styles -->
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/css/global.css">
+
+<body id="body">
+    <div id="overlay"></div>
+    <%- include('../components/navbar.ejs') %>
+    <%- include('../components/generic_error_popup.ejs') %>
+    <div class="index-container">
+        <form action="/search_blog" method="get" id="search-blog">
+            <input type="text" name="pattern" id="search-value" placeholder="Search">
+            <button id='search-btn' type="submit"><img id='search-logo' src="/img/search.svg" alt="sdf"></button>
+        </form>
+        <div class="index-content-container">
+            <div id="blogs" class="grid">
+                <% for(let i = 0; i < responseJson.blogs.length; i++) { %>
+                    <%- include('../components/blog_listing.ejs', {blog: responseJson.blogs[i]}) %>
+                <% } %>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
+<script src="/js/axios.min.js"></script>
+<script src="/js/index.js" type="text/javascript"></script>

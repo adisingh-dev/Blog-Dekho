@@ -1,0 +1,22 @@
+/* LOADER */
+#loader-small{
+    /* display: none; */
+    height: 30rem;
+    width: 27rem;
+    position: absolute;
+    background-color: #192435;
+}
+
+.loader-small-container{
+    width: 100%;
+    height: 85vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+}
+
+#loader-small-img{
+    position: absolute;
+    width: 10rem;
+}

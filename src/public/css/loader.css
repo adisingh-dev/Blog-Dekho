@@ -1,0 +1,29 @@
+/* LOADER */
+#loader{
+    /* display: none; */
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    background-color: #000C1F;
+
+}
+
+.loader-blur{
+    /* opacity: calc(.7); */
+    /* width: 100%; */
+    /* height: 100%; */
+}
+
+.loader-container{
+    width: 100%;
+    height: 85vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+}
+
+#loader-img{
+    position: absolute;
+    width: 10rem;
+}
