@@ -1,11 +1,20 @@
-const cancelbuttons = document.querySelectorAll('.errorpopupcancel');
-cancelbuttons.forEach(button => {
-    button.addEventListener('click', () => {
-        document.querySelector('.errorpopupcontainer').style.display = 'none';
-        document.querySelector('.errorpopupoverlay').style.display = 'none';
-    });
-});
 
+document.addEventListener('DOMContentLoaded', () => {
+    const cancelbuttons = document.querySelectorAll('.errorpopupcancel');
+    let blogtitle = document.querySelector('.blog-title');
+    let blogbody = document.querySelector('.blog-body');
+
+    cancelbuttons.forEach(button => {
+        button.addEventListener('click', () => {
+            document.querySelector('.errorpopupcontainer').style.display = 'none';
+            document.querySelector('.errorpopupoverlay').style.display = 'none';
+        });
+    });
+    console.log(blogtitle.getAttribute('blogtitle'));
+    
+    blogtitle.innerHTML = marked.parse(blogtitle.getAttribute('blogtitle'));
+    blogbody.innerHTML = marked.parse(blogbody.getAttribute('blogbody'));
+});
 
 // toggle subscription
 const subscribeBtn = document.querySelector('.subscription');

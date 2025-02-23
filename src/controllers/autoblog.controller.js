@@ -1,35 +1,41 @@
 import path from 'node:path';
 import dotenv from 'dotenv';
 dotenv.config({path: path.join(process.cwd(), '.env')});
-import {GoogleGenerativeAI} from '@google/generative-ai';
+import fs from 'node:fs';
+import {pool} from '../db/config.js';
 import cron from 'node-cron';
 import puppeteer from 'puppeteer';
-import {pool} from '../db/config.js';
 import {v2 as cloudinary} from 'cloudinary';
+import {GoogleGenerativeAI} from '@google/generative-ai';
+import Together from "together-ai";
 
 
 class AutoBlogController{
     static clients = [];
 
     static async AutoBlogDetails(req, res) {
+        let responseJson = {};
         try {
+            // do not process input if given date is less than given date
+            const diff = new Date(`${req.body.scheduledOn} ${req.body.scheduledAt}`) - new Date();
+            if(diff <= 0) {
+                throw "Schedule time and date cannot be less than current time!";
+            }
             await pool.execute('insert into bd_auto_post_details (user_id, keywords, scheduled_at, scheduled_on, updated_at, created_at) values (:user_id, :keywords, :scheduled_at, :scheduled_on, NOW(), NOW())', {
                 user_id: req.session.userinfo.userid,
                 keywords: req.body.keywords,
                 scheduled_at: req.body.scheduledAt,
                 scheduled_on: req.body.scheduledOn
             });
-            res.status(201).json({
-                status: 201,
-                inputCaptured: true
-            });
+            responseJson.status = 201;
+            responseJson.inputCaptured = true;
             
         } catch (error) {
-            res.status(500).json({
-                status: 500,
-                inputCaptured: false
-            });
+            responseJson.status = (typeof error == 'string')? 400: 500;
+            responseJson.inputCaptured = false;
+            responseJson.message = (typeof error == 'string')? error: "Something went wrong. Try again later";
         }
+        res.status(responseJson.status).json(responseJson);
     }
     
 
@@ -55,9 +61,20 @@ class AutoBlogController{
             // input: 15:23 (24-hr format), 2024-10-17 (yyyy-mm-dd)
             // output: 23 15 17 10 *
             // query: year setting in cron expression?
-            let at = autoBlogData[0].scheduled_at, on = autoBlogData[0].scheduled_on;
-            let cronExp = `${at[3]}${at[4]} ${at[0]}${at[1]} ${on[8]}${on[9]} ${on[5]}${on[6]} *`;
-
+            let at = autoBlogData[0].scheduled_at;
+            const date = new Date(autoBlogData[0].scheduled_on);
+            let on = date.toLocaleString('en-GB',{
+                weekday: 'short',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true,
+            });     
+            let cronExp = `${at[3]}${at[4]} ${at[0]}${at[1]} ${on[5]}${on[6]} ${on[8]}${on[9]} *`;
+            console.log(cronExp);
             
             // integrate Google Gemini Api and generate content through relevant prompts
             const genAi = new GoogleGenerativeAI(process.env.AI_KEY);
@@ -67,87 +84,43 @@ class AutoBlogController{
             // higher values = creative/unpredictable response
             // lower values = deterministic/factual response
             // range = [0.0, 2.0] default 0.7
-            // generate a temperature in range [0 - 1.2] for randomizing blog content when feeded with same inputs
-            const temperature = (Math.floor(Math.random() * 1000 + 1) % 13) / 10;
+            // generate a temperature in range [0 - 1.1] for randomizing blog content when feeded with same inputs
+            const temperature = (Math.floor(Math.random() * 1000 + 1) % 12) / 10;
             
             // configure gemini
             const model = genAi.getGenerativeModel({
-                model: 'gemini-1.5-flash',
+                model: 'gemini-2.0-flash',
                 generationConfig: {
                     temperature
                 }
             });
-
-            // let c =0;
-            // const customprocess = setInterval(() => {
-            //     if(c > 6) {
-            //         clearInterval(customprocess);
-            //         res.write("event: close\n");
-            //         res.write("data: Finished! Your blog has been created successfully\n\n");
-            //         // BlogAutomationController.clients.pop();
-
-            //         // return res.status(200).json({
-            //         //     blogGenerated: true
-            //         // });
-            //     }
-            //     if(c==1) res.write("data: Generating Blog title\n\n");
-            //     if(c==2) res.write("data: Generating Blog Excerpt\n\n");
-            //     if(c==3) res.write("data: Generating Blog Description\n\n");
-            //     if(c==4) res.write("data: Fetching a featured graphic/thumbnail\n\n");
-            //     if(c==5) res.write("data: Uploading graphic asset on cloudinary\n\n");
-            //     if(c==6) res.write("data: Updating the database\n\n");
-            //     c++;
-
-            // }, 2000);
-
             const aiBlogTitle = await model.generateContent(`${process.env.AI_BLOG_TITLE_PROMPT} ${autoBlogData[0].keywords}`);
             res.write("data: Generated Blog title\n\n");
 
-            const aiBlogExcerpt = await model.generateContent(`${process.env.AI_BLOG_EXCERPT_PROMPT} ${autoBlogData[0].keywords}`);
+            const aiBlogExcerpt = await model.generateContent(`${process.env.AI_BLOG_EXCERPT_PROMPT} ${aiBlogTitle.response.text()}`);
             res.write("data: Generated Blog Excerpt\n\n");
 
-            const aiBlogDescription = await model.generateContent(`${process.env.AI_BLOG_DESCRIPTION_PROMPT} ${autoBlogData[0].keywords}`);
+            const aiBlogDescription = await model.generateContent(`${process.env.AI_BLOG_DESCRIPTION_PROMPT} ${aiBlogTitle.response.text()}`);
             res.write("data: Generated Blog Description\n\n");
-
-            const aiAutoImgText = await model.generateContent(`${process.env.IMAGE_AUTO_PROMPT} ${autoBlogData[0].keywords}`);
-            console.log('img text: ', aiAutoImgText.response.text());
             
-            // configure puppeteer for headless browser automation
-            const browser = await puppeteer.launch({headless: false});
-            const page = await browser.newPage();
-
-            // set navigation timeout to 1min in case of poor network conditions
-            page.setDefaultNavigationTimeout(60000);
-
-            // browse pinterest url to get quality images
-            await page.goto(`${process.env.IMAGE_BASE_URL}${aiAutoImgText.response.text()}`, {waitUntil: 'networkidle2'});
-
-            let imageSrc = await page.evaluate(async () => {
-                // store unique img URLs because pinterest lazy loads all images so it
-                // causes repeatition of same image links everytime window is scrolled
-                let images = new Set();
-
-                while (images.size < 50) {
-                    window.scrollBy(0, window.innerHeight);
-
-                    // wait for 1sec to allow lazy loading
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-
-                    const imgElements = document.querySelectorAll('img');
-                    imgElements.forEach(img => {
-                        if (img.width > 60 && img.height > 60 && img.width !== img.height) {
-                            images.add(img.src);
-                        }
-                    });
-                }
-                images = Array.from(images);
-                let randindx = Math.floor(Math.random() * images.length);
-                console.log('images: ', images);
-                console.log('randindx: ', randindx);
-                return images[randindx];
+            // generate blog thumbnail using AI integration
+            const aiAutoImgText = await model.generateContent(`${process.env.IMAGE_AUTO_PROMPT} ${aiBlogDescription.response.text()}`);
+            const together = new Together({
+                apiKey: process.env.TOGETHER_AI_KEY
             });
-            res.write("data: Fetched a featured graphic/thumbnail\n\n");
-
+            const response = await together.images.create({
+                model: "black-forest-labs/FLUX.1-schnell-Free",
+                prompt: aiAutoImgText.response.text(),
+                width: 800,
+                height: 512,
+                steps: 4,
+                n: 4,
+                response_format: "b64_json"
+            });
+            const imagebuffer = Buffer.from(response.data[0].b64_json, 'base64');
+            const aiImageFile = path.join('src', 'public', 'assets', 'uploads', `${`blog_dekho_ai_thumbnail_${new Date().getTime()}`}.webp`);
+            fs.writeFileSync(aiImageFile, imagebuffer);
+            res.write("data: Blog thumbnail graphic image generated\n\n");
             
             // upload newfound img asset to cloud
             cloudinary.config({ 
@@ -155,39 +128,40 @@ class AutoBlogController{
                 api_key: process.env.CLD_KEY, 
                 api_secret: process.env.CLD_SECRET
             });
-            const {secure_url} = await cloudinary.uploader.upload(imageSrc, {folder: 'featured'});
+            const {secure_url} = await cloudinary.uploader.upload(aiImageFile, {folder: 'featured'});
+            fs.unlinkSync(aiImageFile);
             res.write("data: Uploaded graphic asset on cloudinary\n\n");
 
 
             // push the generated data on our db
-            const finale = await pool.execute(
-                'insert into bd_blogs_listing (userid, title, body, excerpt, img_url, mode) values (:userid, :title, :body, :excerpt, :imgUrl, :mode)', 
-                {
-                    userid: req.session.userinfo.userid,
-                    title: aiBlogTitle.response.text(), 
-                    body: aiBlogDescription.response.text(),
-                    excerpt: aiBlogExcerpt.response.text(),
-                    imgUrl: secure_url,
-                    mode: 'auto'
+            const task = cron.schedule(cronExp, async () => {
+                const blogtitle = aiBlogTitle.response.text();
+                const blogdescription = aiBlogDescription.response.text();
+                const blogexcerpt = aiBlogExcerpt.response.text();
+                if(blogtitle && blogdescription && blogexcerpt) {        
+                    await pool.execute(
+                        'insert into bd_blogs_listing (userid, title, body, excerpt, img_url, mode) values (:userid, :title, :body, :excerpt, :imgUrl, :mode)', {
+                            userid: req.session.userinfo.userid,
+                            title: blogtitle, 
+                            body: blogdescription,
+                            excerpt: blogexcerpt,
+                            imgUrl: secure_url,
+                            mode: 'auto'
+                        }
+                    );  
                 }
-            );
-            res.write("data: Updated the database\n\n");
+                res.write("event: close\n");
+                res.write("data: Updated the database\n\n");
+                task.stop();
+            });
 
             // process ends here
-            console.log(`title: ${aiBlogTitle.response.text()}`);
-            console.log(`excerpt: ${aiBlogExcerpt.response.text()}`);
-            console.log(`body: ${aiBlogDescription.response.text()}`);
-            console.log(`image: ${imageSrc}`);
-            res.write("event: close\n");
             res.write("data: Finished! Your blog has been created successfully\n\n");
             
         } catch (error) {
-            console.log(error);
-            return res.status(500).json({
-                blogGenerated: false
-            });
+            res.write("event: error\n");
+            res.write("data: Some error occured while processing the request. Please try again later\n\n");
         }
-
     }
 }
 

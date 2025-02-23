@@ -8,6 +8,7 @@ tinymce.init({
     setup: function (editor) {
       editor.on('init', function () {
         document.getElementById('loader-small').style.display = 'none';
+        tinymce.get("description").setContent("");
     });
   }
 });

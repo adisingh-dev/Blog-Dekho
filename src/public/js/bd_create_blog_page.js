@@ -1,3 +1,23 @@
+const cancelbuttons = document.querySelectorAll('.confirmcancel');
+const errorcancelbuttons = document.querySelectorAll('.errorpopupcancel');
+
+// cancel confirmation popup
+cancelbuttons.forEach(button => {
+    button.addEventListener('click', () => {
+        document.querySelector('.confirmpopupoverlay').style.display = 'none';
+        document.querySelector('.confirmpopupcontainer').style.display = 'none';
+    });
+});
+
+// cancel error popup
+errorcancelbuttons.forEach(button => {
+    button.addEventListener('click', () => {
+        document.querySelector('.errorpopupoverlay').style.display = 'none';
+        document.querySelector('.errorpopupcontainer').style.display = 'none';
+    });
+});
+
+
 function validateInput(inp, regex) {
     return regex.test(inp);
 }
@@ -8,6 +28,7 @@ const mountEventSource = () => {
         eventsource.close();
     });
     document.getElementById('canceleventpopup').disabled = true;
+    document.getElementById('canceleventpopup').classList.remove('enablebtn');
     document.getElementById('canceleventpopup').classList.add('disablebtn');
     
     const eventsource = new EventSource(`/stream_blog_updates`);
@@ -15,16 +36,19 @@ const mountEventSource = () => {
         eventsource.close();
         const nthLi = document.querySelector(`#events li:nth-child(${++eventcounter})`);
         const nthImg = nthLi.querySelector(':nth-child(1)');
-        nthImg.src = '/assets/img/tick.svg';
+        nthImg.src = '/img/tick.svg';
         nthImg.classList.add('event-completed');
 
-        document.getElementById('canceleventpopup').disabled = false;
         document.getElementById('canceleventpopup')
         .addEventListener('click', () => {
+            const progressicons =  document.querySelectorAll('.event-progress');
+            progressicons.forEach(nthprogressicon => {
+                nthprogressicon.src = "/img/loader-xs.svg";
+            });
             document.querySelector('.popupoverlay').style.display = 'none';
             document.querySelector('.eventspopup').style.display = 'none';
         });
-
+        document.getElementById('canceleventpopup').disabled = false;
         document.getElementById('canceleventpopup').classList.remove('disablebtn');
         document.getElementById('canceleventpopup').classList.add('enablebtn');
     });
@@ -32,64 +56,100 @@ const mountEventSource = () => {
     eventsource.onerror = (err) => {
         eventsource.close();
         if (eventsource.readyState === EventSource.CLOSED) {
-            console.log('Reconnecting...');
+            // hide event display popup
+            document.querySelector('.popupoverlay').style.display = 'none';
+            document.querySelector('.eventspopup').style.display = 'none';
+            // show generic error popup
+            document.querySelector('.errorpopupoverlay').style.display = 'block';
+            document.querySelector('.errorpopupcontainer').style.display = 'block';
+            document.querySelector('.errorpopuptext').textContent = 'Oops! Could not connect to server. Please try again later';
         }
     };
 
-    const ul = document.getElementById('events');
     let eventcounter = 0;
     eventsource.onmessage = (event) => {
-        const nthLi = document.querySelector(`#events li:nth-child(${++eventcounter})`);
-        const nthImg = nthLi.querySelector(':nth-child(1)');
-        nthImg.src = '/assets/img/tick.svg';
-        nthImg.classList.add('event-completed');
-        console.log(event.data);
+        try {
+            const nthLi = document.querySelector(`#events li:nth-child(${++eventcounter})`);
+            const nthImg = nthLi.querySelector(':nth-child(1)');
+            nthImg.src = '/img/tick.svg';
+            nthImg.classList.add('event-completed');
+            
+        } catch (error) {
+            eventsource.close();
+        }
     }
 }
 
 
-document.getElementById('auto-form-create')
-.addEventListener('submit', async e => {
-    e.preventDefault();
-
-    const usernameValid = validateInput(e.target.keywords.value, /^[A-Za-z0-9 ]{1,500}$/);
-    const scheduleatValid = validateInput(e.target.scheduledAt.value, /^^[0-9:]+$/);
-    const scheduleonValid = validateInput(e.target.scheduledOn.value, /^^[0-9-]+$/);
+document.getElementById('schedule')
+.addEventListener('click', () => {
+    const keywords = document.getElementById('blog-relevant-keywords').value;
+    const scheduledAt = document.getElementById('scheduled-at').value;
+    const scheduledOn = document.getElementById('scheduled-on').value;
     
-    if(usernameValid && scheduleatValid && scheduleonValid) {
-        // initialize popup
-        document.querySelector('.popupoverlay').style.display = 'block';
-        document.querySelector('.eventspopup').style.display = 'block';
+    const keywordsValid = validateInput(keywords, /^[A-Za-z0-9'",! ]{1,500}$/);
+    const scheduleatValid = validateInput(scheduledAt, /^^[0-9:]+$/);
+    const scheduleonValid = validateInput(scheduledOn, /^^[0-9-]+$/);
+    
+    if(keywordsValid && scheduleatValid && scheduleonValid) {
+        document.querySelector('.confirmpopupcontainer').style.display = 'block';
+        document.querySelector('.confirmpopupoverlay').style.display = 'block';
+        document.querySelector('.confirmpopuptext').textContent = 
+        `Are you sure you want to create the blog now and schedule it on ${scheduledOn} at ${scheduledAt}?`;
 
-        try {
-            const res = await axios.post('/auto_blog_data', e.target, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            if(res.data.inputCaptured) {
-                mountEventSource();
-
-            } else {
-                console.log('auto blog data capture failed');
-                document.getElementById('errormessage').textContent = "Something went wrong. Please try again later";
-            }
-                
-        } catch (error) {
-            document.getElementById('overlay').style.display = 'none';
-            document.querySelector('#errormessage').textContent = 'Something went wrong. Please try again later';
+        const triggerAutoBlog = () => {
+            document.querySelector('.confirmpopupcontainer').style.display = 'none';
+            document.querySelector('.confirmpopupoverlay').style.display = 'none';
+            automatePost(keywords, scheduledAt, scheduledOn);
         }
-          
+        document.getElementById('confirmok').removeEventListener('click', triggerAutoBlog)
+        document.getElementById('confirmok').addEventListener('click', triggerAutoBlog);
+        document.getElementById('errormessage').textContent.textContent = "";
+
     } else {
         document.getElementById('errormessage').textContent = 
-        !usernameValid? "Username can only contain alphabets A-Z/a-z and numbers 0-9":
-        !scheduleatValid? "Schedule at field can only contain numbers 0-9 and (:)":
-        !scheduleonValid? "Schedule on field can only contain numbers 0-9 and hyphen (-)": ""
+        !keywordsValid? "Keywords can only contain alphabets A-Z/a-z, ', \", !, comma and numbers 0-9":
+        !scheduleatValid? "Schedule time can only contain numbers 0-9 and (:)":
+        !scheduleonValid? "Schedule date can only contain numbers 0-9 and hyphen (-)": ""
     }
-
 });
+
+
+async function automatePost(keywords, scheduledAt, scheduledOn) {
+    // initialize event update modal
+    try {
+        const res = await axios.post('/auto_blog_data', {
+            keywords, scheduledAt, scheduledOn
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if(res.data.inputCaptured) {
+            document.querySelector('.popupoverlay').style.display = 'block';
+            document.querySelector('.eventspopup').style.display = 'block';
+            mountEventSource();
+        }
+            
+    } catch (error) {
+        if(error.response) {
+            document.querySelector('.errorpopuptext').textContent = error.response.data.message;
+
+        } else if(error.request) {
+            document.querySelector('.errorpopuptext').textContent = 'Oops! Something went wrong. Please try again later';
+        }
+        // hide event display popup
+        document.querySelector('.popupoverlay').style.display = 'none';
+        document.querySelector('.eventspopup').style.display = 'none';
+
+        // show generic error popup
+        document.querySelector('.errorpopupoverlay').style.display = 'block';
+        document.querySelector('.errorpopupcontainer').style.display = 'block';
+    }
+}
+
 
 document.getElementById('reset')
 .addEventListener('click', e => {
-    document.getElementById('error-message').textContent = "";
+    document.getElementById('errormessage').textContent = "";
 });

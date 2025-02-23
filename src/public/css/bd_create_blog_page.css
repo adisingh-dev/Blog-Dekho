@@ -47,7 +47,7 @@ body{
     justify-content: flex-start;
     gap: 1.3rem;
     width: 27rem;
-    height: 30rem;
+    height: 31rem;
     padding: 1rem;
     margin: 0 auto;
     box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
@@ -126,11 +126,12 @@ body{
 
 /* error-text */
 #errormessage{
-    color: red;
+    color: crimson;
     text-align: center;
     margin: 0;
+    margin-bottom: 
     height: .8rem;
-    font-size: .8rem;
+    font-size: .9rem;
 }
 
 /* popup */
@@ -207,4 +208,55 @@ body{
 
 .auto-form-wrapper{
     display: flex;justify-content: flex-start;
+}
+
+.confirmpopupoverlay{
+    width: 100vw;
+    height:100vh;
+    overflow:none;
+    position:absolute;
+    display: none;
+    opacity: .8;z-index:100;
+    background-color: black;
+}
+
+.confirmpopupcontainer{
+    background-color: #08203e;color:white;padding:0rem;border-radius: 7px;display: flex;flex-direction: column;gap:2rem;width: 30vw;position:absolute;z-index:101;display:none;top:40vh;left:calc(100vw - (50vw + 15vw));
+}
+
+.confirmpopupheader{
+    display: flex;justify-content: space-between;align-items: center;background-color: #2d2d2d;padding: .5rem;border-radius: 7px 7px 0 0;
+}
+
+.confirmpopupheadertext{
+    margin: 0;cursor:default;font-size: .9rem;
+}
+
+.confirmpopupicon{
+    margin: 0;cursor:pointer;font-weight: bold;
+}
+
+.confirmpopupcontent{
+    display: flex;flex-direction: column;justify-content: center;gap:2rem;padding:1rem;height:8rem;
+}
+
+.confirmpopuptext{
+    text-align: center;margin: 0;font-size: .8rem;line-height:1.2rem;
+}
+
+.confirmpopupactions{
+    display: flex;justify-content: center;gap: 1rem;
+}
+
+#confirmok{
+    background-color: #003001;color:#0e975e;padding:.5rem;border:1px solid #003001;border-radius: 5px;cursor: pointer;width: 5rem;font-weight: 600;font-size: .75rem;
+}
+
+#confirmcancel{
+    background-color: #003001;color:#0e975e;padding:.5rem;border:1px solid #003001;border-radius: 5px;cursor: pointer;width: 5rem;font-weight: 600;font-size: .75rem;
+}
+
+.confirmcancel{
+    margin:0;
+    cursor: pointer;
 }

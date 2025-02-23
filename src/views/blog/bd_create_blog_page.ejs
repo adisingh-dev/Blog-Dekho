@@ -2,6 +2,25 @@
 <link rel="stylesheet" href="/css/bd_create_blog_page.css">
 
 <body>
+    <!-- generic error modal -->
+    <%- include('../components/generic_error_popup.ejs') %>
+
+    <!-- confirmation modal -->
+    <div class="confirmpopupoverlay"></div>
+    <div class="confirmpopupcontainer">
+        <div class="confirmpopupheader">
+            <p class="confirmpopupheadertext">Auto Post Confirmation</p>
+            <p class="confirmcancel">&times;</p>
+        </div>
+        <div class="confirmpopupcontent">
+            <p class="confirmpopuptext"></p>
+            <div class="confirmpopupactions">
+                <button class="confirmcancel" id="confirmcancel">Cancel</button>
+                <button class="confirmok" id="confirmok">Confirm</button>
+            </div>
+        </div>
+    </div>
+
     <div id="overlay"></div>
     <%- include('../components/navbar.ejs') %>
     <div class="auto-form-wrapper">
@@ -28,7 +47,7 @@
             <!-- form actions -->
             <div class="schedule-ops">
                 <button type="reset" id="reset">Reset</button>
-                <button type="submit" id="schedule">Schedule</button>
+                <button type="button" id="schedule">Schedule</button>
             </div>
 
             <!-- error -->
@@ -59,7 +78,7 @@
                 </li>
                 <li class="listitem">
                     <img src="/img/loader-xs.svg" alt="" class="event-progress">
-                    <p class="event-message">Fetching a featured graphic/thumbnail</p>
+                    <p class="event-message">Generating a blog thumbnail/graphic</p>
                 </li>
                 <li class="listitem">
                     <img src="/img/loader-xs.svg" alt="" class="event-progress">

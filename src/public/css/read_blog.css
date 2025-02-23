@@ -31,6 +31,7 @@
 .blog-wrapper{
     display: flex;
     margin-top: 2rem;
+    padding-bottom: 5rem;
 }
 
 /* created by information */

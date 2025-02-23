@@ -92,7 +92,6 @@ class BlogController {
             );
             // get author details
             const [creator] = await pool.query('select u.id, u.username, u.profilepic from bd_user u where id = :creatorid', {creatorid: blog[0].userid});
-            console.log('reached creatorid', blog[0]);
             
             // get subscriber count
             const [totalsubs] = await pool.query('select count(*) as subs from bd_subscriptions where subscribed_channel_id = :creatorid', {
@@ -136,13 +135,9 @@ class BlogController {
             };
             
         } catch (error) {
-            console.log(error);
-            
             responseJson.status = 500;
             responseJson.message = "something went wrong";
         }
-        console.log(responseJson);
-        
         res.status(responseJson.status).render('./blog/read_blog', {responseJson});
     }
 

@@ -38,8 +38,7 @@ router.get('/liked_blogs', UserProfileController.renderLikedBlogs);
 
 // automate job
 router.get('/automate', BlogController.bdCreateBlogPage);
-router.get('/stream_blog_updates',  AutoBlogController.GenerateBlog);
-
+router.get('/stream_blog_updates', checkInternet, AutoBlogController.GenerateBlog);
 
 
 // POST Routes
@@ -49,12 +48,11 @@ router.post('/toggle-likes', BlogController.toggleLikes);
 router.post('/about', UserProfileController.aboutUser);
 
 
-
 // update blog
 router.post('/blogs/:id', checkInternet, uploader.single('featured'), validateInput, BlogController.createBlog);
 router.post('/userprofilepic', checkInternet, uploader.single('userprofilepic'), UserProfileController.profileImage);
 router.post('/blogs/:id/shorts', BlogController.getShortVideos);
-router.post('/auto_blog_data', validateInput, AutoBlogController.AutoBlogDetails);
+router.post('/auto_blog_data', checkInternet, validateInput, AutoBlogController.AutoBlogDetails);
 
 
 // DELETE Routes

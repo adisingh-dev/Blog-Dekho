@@ -47,11 +47,12 @@ document.getElementById('image-input').addEventListener('change', function(event
 const form = document.getElementById('create-blog');
 form.addEventListener('submit', async e => {
     e.preventDefault();
-    
+    let inputFields = document.getElementsByClassName('input-field');
+
     const eTarget = e.target;
     try {
+        document.getElementById('overlay').style.display = 'block';
         if(validateInput(eTarget) == false) {
-            let inputFields = document.getElementsByClassName('input-field');
             for(let field of inputFields) {
                 if(field.value.length == 0) {
                     field.style.border = '2px solid red';
@@ -61,8 +62,9 @@ form.addEventListener('submit', async e => {
                 let imgwrapper = document.querySelector('#image-preview');
                 imgwrapper.style.border = '3px solid red';
             }
-
+            document.getElementById('overlay').style.display = 'none';
             throw '*All fields are required. Pls enter valid input';
+
         }
         const formdata = new FormData();
         formdata.append('featured', (eTarget.featured.files.length > 0)? eTarget.featured.files[0]: eTarget.preview.src);
@@ -74,9 +76,16 @@ form.addEventListener('submit', async e => {
         const res = await axios.post(e.target.action, formdata, {
             headers: "multipart/form-data"
         });
+        console.log(res);
+        
         let verdict = document.getElementById('verdict');
-        verdict.textContent = res.data.msg;
+        verdict.textContent = res.data.message;
         verdict.style.color = '#43a535';
+
+        for(let field of inputFields) {
+            field.style.border = '2px solid #385480';
+        }
+        document.getElementById('overlay').style.display = 'none';
 
     } catch (error) {
         let verdict = document.getElementById('verdict');
@@ -85,6 +94,9 @@ form.addEventListener('submit', async e => {
 
         } else if(error.request) {
             verdict.textContent = 'Oops! Something went wrong. Please try again later';
+
+        } else if(typeof error == 'string') {
+            verdict.textContent = error;
         }
         verdict.style.color = 'red';
     }
