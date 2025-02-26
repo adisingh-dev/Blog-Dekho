@@ -4,7 +4,6 @@ dotenv.config({path: path.join(process.cwd(), '.env')});
 import fs from 'node:fs';
 import {pool} from '../db/config.js';
 import cron from 'node-cron';
-import puppeteer from 'puppeteer';
 import {v2 as cloudinary} from 'cloudinary';
 import {GoogleGenerativeAI} from '@google/generative-ai';
 import Together from "together-ai";
