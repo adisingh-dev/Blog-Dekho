@@ -6,6 +6,8 @@ import express from 'express'
 import cors from 'cors';
 import {usersession} from './src/db/config.js';
 import router from './src/routes/router.js';
+import Auth from './src/middlewares/auth.middleware.js';
+import AuthRouter from './src/routes/authrouter.js';
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -15,9 +17,13 @@ app.use(cors());
 app.use(usersession);
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+
 app.use(express.static(path.join(import.meta.dirname, 'src', 'public', 'assets')));
 app.use(express.static(path.join(import.meta.dirname, 'src', 'public')));
 app.use('/tinymce', express.static(path.join(import.meta.dirname, 'node_modules', 'tinymce')));
+
+app.use(AuthRouter);
+app.use(Auth);
 app.use(router);
 
 app.get("*", (req, res) => {

@@ -1,22 +1,14 @@
 import bcrypt from 'bcrypt';
 import {pool} from '../db/config.js';
-import {uploadToCloud} from '../middlewares/fileUpload.js';
+import jwt from 'jsonwebtoken';
+
 
 class AuthController {
-    // server-sid authentication for valid and expired session
-    static async sessionHandler(req, res, next) {
-        const [sess] = await pool.query('select user_id from sessions where session_id = :sess', {
-            sess: req.session.id
-        });
-        if(sess[0]?.user_id) {
-            return (req.url === '/login' || req.url === '/register')? res.redirect('/blogs'):  next();
-        }
-        return (req.url === '/login' || req.url === '/register')? next(): res.redirect('/destroyUserSession');
-    }
-
-    
     // destroy a session
     static destroySession(req, res, next) {
+        res.clearCookie('bearer_token', {
+            httpOnly: false
+        });
         req.session.destroy((error) => {
             if(error) {
                 return res.status(500).json({
@@ -57,6 +49,13 @@ class AuthController {
                         // delete all previous sessions. only session in current browser should persist
                         await pool.execute('delete from sessions where user_id=:userid', {userid: userdata[0].id});
 
+                        // generate a jwt token to be expired in 2h
+                        const token = jwt.sign({
+                            userid: userdata[0].id
+
+                        }, process.env.TOKEN_SECRET, {
+                            expiresIn: 60 * 60 * 2
+                        });
                         req.session.userinfo = {
                             username: userdata[0].username,
                             userid: userdata[0].id,
@@ -65,18 +64,24 @@ class AuthController {
                             profilepic: userdata[0].profilepic,
                             loggedIn: true
                         }
-
                         // ensuring the session is saved explicitly before updating userid
                         await req.session.save();
 
                         // update sessions table and set userid as foreign key
-                        await pool.execute('update sessions set user_id=:userid where session_id=:sessid', {
+                        await pool.execute('update sessions set user_id=:userid, token=:token where session_id=:sessid', {
                             userid: userdata[0].id,
+                            token,
                             sessid: req.session.id
                         });
 
+                        // set bearer token in httpOnly enabled cookie
+                        res.cookie('bearer_token', token, {
+                            httpOnly: true,
+                            expires: new Date(Date.now() + 1000 * 60 * 60 * 2)
+                        });
                         return res.status(200).json({
                             statusCode: 200,
+                            token,
                             message: "User logged in successfully"
                         });
 
@@ -128,7 +133,10 @@ class AuthController {
                         const hash = await bcrypt.hash(password, salt);
 
                         await pool.execute(
-                            'insert into bd_user (username, email, password, profilepic) values (:username, :email, :password, :profilepic)',
+                            `insert into bd_user 
+                                (username, email, password, profilepic) 
+                            values 
+                                (:username, :email, :password, :profilepic)`,
                             { username, email, password: hash, profilepic: '/img/my-profile.svg' }
                         );
 

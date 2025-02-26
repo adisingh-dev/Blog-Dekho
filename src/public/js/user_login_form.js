@@ -9,7 +9,9 @@ document.getElementById('user-login-form')
             username: event.target.username.value,
             password: event.target.password.value
         });
-        window.location.href = "/blogs";
+        if(userLoginRes.data.token) {
+            window.location.href = '/blogs';
+        }
 
     } catch (error) {
         if(error.response) {
