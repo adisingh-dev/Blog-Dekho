@@ -77,7 +77,7 @@ class AuthController {
                         // set bearer token in httpOnly enabled cookie
                         res.cookie('bearer_token', token, {
                             httpOnly: true,
-                            expires: new Date(Date.now() + 1000 * 60 * 60 * 2)
+                            maxAge: new Date(Date.now() + 1000 * 60 * 60 * 2)
                         });
                         return res.status(200).json({
                             statusCode: 200,

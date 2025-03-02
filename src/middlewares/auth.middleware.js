@@ -4,13 +4,12 @@ dotenv.config({path: path.join('/', '.env')});
 
 import jwt from 'jsonwebtoken';
 import {pool} from '../db/config.js';
+import AuthController from '../controllers/auth.controller.js';
 
 
 const Auth = async (req, res, next) => {
     try {
         const cookie = req.headers.cookie;
-        console.log(req.headers);
-        console.log(req.method, req.url);
         const cookiename = 'bearer_token';
         const startidx = cookie.indexOf('bearer_token') + cookiename.length + 1;
         let bearertoken = "";
@@ -22,14 +21,10 @@ const Auth = async (req, res, next) => {
         const [userid] = await pool.query('select id from bd_user where id = :userid', {
             userid: tokendata.userid
         });
-        if(userid[0]?.id) {
-            console.log('tokenreturned==>>', tokendata);
-            return (req.url === '/login' || req.url === '/register')? res.redirect('/blogs'):  next();
-        }
-        return (req.url === '/login' || req.url === '/register')? next(): res.redirect('/login');
+        next();
 
     } catch (error) {
-        return res.redirect('/login');
+        return res.redirect('/destroyUserSession');
     }
 }
 
