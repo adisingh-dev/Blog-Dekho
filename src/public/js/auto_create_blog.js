@@ -104,11 +104,10 @@ document.getElementById('schedule')
     const scheduledAt = document.getElementById('scheduled-at').value;
     const scheduledOn = document.getElementById('scheduled-on').value;
     
-    // const keywordsValid = validateInput(keywords, /^[A-Za-z0-9'".,!:-]{1,500}$/);
     const scheduleatValid = validateInput(scheduledAt, /^^[0-9:]+$/);
     const scheduleonValid = validateInput(scheduledOn, /^^[0-9-]+$/);
     
-    if(true && scheduleatValid && scheduleonValid) {
+    if(scheduleatValid && scheduleonValid) {
         document.querySelector('.confirmpopupcontainer').style.display = 'block';
         document.querySelector('.confirmpopupoverlay').style.display = 'block';
         document.querySelector('.confirmpopuptext').textContent = 
