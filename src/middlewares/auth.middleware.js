@@ -3,8 +3,6 @@ import dotenv from 'dotenv';
 dotenv.config({path: path.join('/', '.env')});
 
 import jwt from 'jsonwebtoken';
-import {pool} from '../db/config.js';
-import AuthController from '../controllers/auth.controller.js';
 
 
 const Auth = async (req, res, next) => {
@@ -18,9 +16,6 @@ const Auth = async (req, res, next) => {
             bearertoken += cookie[i];
         }
         const tokendata = jwt.verify(bearertoken, process.env.TOKEN_SECRET);
-        const [userid] = await pool.query('select id from bd_user where id = :userid', {
-            userid: tokendata.userid
-        });
         next();
 
     } catch (error) {

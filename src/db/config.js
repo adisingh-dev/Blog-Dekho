@@ -5,7 +5,6 @@ import session from 'express-session';
 import mysql from 'mysql2/promise';
 import MySQLStoreFactory from 'express-mysql-session';
 
-console.log(import.meta);
 const pool = await mysql.createConnection({
     host: process.env.HOST,
     database: process.env.DB,
