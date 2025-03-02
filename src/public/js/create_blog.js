@@ -55,16 +55,11 @@ form.addEventListener('submit', async e => {
     let inputFields = document.getElementsByClassName('input-field');
     const eTarget = e.target;
     eTarget.body.value = tinymce.get("description").getContent();
-    console.log('title==>>', eTarget.title.value);
-    console.log('excerpt==>>',eTarget.excerpt.value);
-    console.log('body==>>', eTarget.body.value);
-    console.log('featured==>>', eTarget.featured.files[0]);
     try {
         document.getElementById('overlay').style.display = 'block';
         if(validateInput(eTarget) == false) {
             for(let field of inputFields) {
                 if(field.value.length == 0) {
-                    console.log('inside if check');
                     field.style.border = '2px solid red';
                 }
             }
@@ -85,8 +80,6 @@ form.addEventListener('submit', async e => {
         const res = await axios.post(e.target.action, formdata, {
             headers: "multipart/form-data"
         });
-        console.log(res);
-        
         let verdict = document.getElementById('verdict');
         verdict.textContent = res.data.message;
         verdict.style.color = '#43a535';
