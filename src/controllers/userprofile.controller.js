@@ -129,7 +129,6 @@ class UserProfileController {
             if(req.file) {
                 // call to file upload middleware
                 const uploadRes = await uploadToCloud(req);
-
                 // if received an error then block the upload 
                 if(uploadRes.status == 500) throw uploadRes;
 
@@ -145,12 +144,12 @@ class UserProfileController {
 
             } else {
                 responseJson.status = 500;
-                responseJson.message = uploadRes.message;
+                responseJson.message = "An image file is required";
             }
             
         } catch (error) {
             responseJson.status = 500;
-            responseJson.message = 'something went wrong';
+            responseJson.message = 'Something went wrong. Please try again later';
         }
         res.status(responseJson.status).json(responseJson);
     }
@@ -160,7 +159,7 @@ class UserProfileController {
         const {content} = req.body;
         let responseJson = {};
         try {
-            await pool.execute('update bd_user set about = :contt where id = :userid', {
+            await pool.execute('update bd_user set about = :content where id = :userid', {
                 userid: req.session.userinfo.userid, content
             });
             responseJson.status = 201;

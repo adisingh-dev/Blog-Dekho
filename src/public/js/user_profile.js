@@ -54,6 +54,7 @@ document.querySelector('.about-edit')
 
     aboutSectionInput.disabled = false;
     aboutSectionInput.style.borderBottom = '4px solid #385480';
+    aboutSectionInput.value = aboutSectionInput.placeholder;
     aboutSectionSave.disabled = false;
     aboutSectionSave.style.display = 'block';
 
@@ -64,9 +65,8 @@ document.querySelector('.about-edit')
                 'content': aboutSectionInput.value
             });
             overlay.style.display = 'none';
-            aboutSectionVerdict.textContent = res.data;
+            aboutSectionVerdict.textContent = res.data.message;
             aboutSectionVerdict.style.color = '#00b73f';
-            aboutSectionInput.setAttribute('placeholder', content);
             
         } catch(error) {
             if(error.response) {
