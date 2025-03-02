@@ -10,7 +10,6 @@ import Together from "together-ai";
 
 
 class AutoBlogController{
-    static clients = [];
 
     static async AutoBlogDetails(req, res) {
         let responseJson = {};
@@ -18,7 +17,7 @@ class AutoBlogController{
             // do not process input if given date is less than given date
             const diff = new Date(`${req.body.scheduledOn} ${req.body.scheduledAt}`) - new Date();
             if(diff <= 0) {
-                throw "Schedule time and date cannot be less than current time!";
+                throw "Schedule time and date cannot be less than or equal to current time!";
             }
             await pool.execute('insert into bd_auto_post_details (user_id, keywords, scheduled_at, scheduled_on, updated_at, created_at) values (:user_id, :keywords, :scheduled_at, :scheduled_on, NOW(), NOW())', {
                 user_id: req.session.userinfo.userid,
@@ -32,7 +31,7 @@ class AutoBlogController{
         } catch (error) {
             responseJson.status = (typeof error == 'string')? 400: 500;
             responseJson.inputCaptured = false;
-            responseJson.message = (typeof error == 'string')? error: "Something went wrong. Try again later";
+            responseJson.message = (typeof error == 'string')? error: "Something went wrong. Please try again later";
         }
         res.status(responseJson.status).json(responseJson);
     }
@@ -73,7 +72,6 @@ class AutoBlogController{
                 hour12: true,
             });     
             let cronExp = `${at[3]}${at[4]} ${at[0]}${at[1]} ${on[5]}${on[6]} ${on[8]}${on[9]} *`;
-            console.log(cronExp);
             
             // integrate Google Gemini Api and generate content through relevant prompts
             const genAi = new GoogleGenerativeAI(process.env.AI_KEY);
@@ -93,12 +91,16 @@ class AutoBlogController{
                     temperature
                 }
             });
+
+            // generate blog title
             const aiBlogTitle = await model.generateContent(`${process.env.AI_BLOG_TITLE_PROMPT} ${autoBlogData[0].keywords}`);
             res.write("data: Generated Blog title\n\n");
 
+            // generate blog excerpt
             const aiBlogExcerpt = await model.generateContent(`${process.env.AI_BLOG_EXCERPT_PROMPT} ${aiBlogTitle.response.text()}`);
             res.write("data: Generated Blog Excerpt\n\n");
 
+            // generate blog content
             const aiBlogDescription = await model.generateContent(`${process.env.AI_BLOG_DESCRIPTION_PROMPT} ${aiBlogTitle.response.text()}`);
             res.write("data: Generated Blog Description\n\n");
             
@@ -107,6 +109,7 @@ class AutoBlogController{
             const together = new Together({
                 apiKey: process.env.TOGETHER_AI_KEY
             });
+            // configure blog image generation using AI
             const response = await together.images.create({
                 model: "black-forest-labs/FLUX.1-schnell-Free",
                 prompt: aiAutoImgText.response.text(),
@@ -132,30 +135,48 @@ class AutoBlogController{
             res.write("data: Uploaded graphic asset on cloudinary\n\n");
 
 
-            // push the generated data on our db
-            const task = cron.schedule(cronExp, async () => {
-                const blogtitle = aiBlogTitle.response.text();
-                const blogdescription = aiBlogDescription.response.text();
-                const blogexcerpt = aiBlogExcerpt.response.text();
-                if(blogtitle && blogdescription && blogexcerpt) {        
-                    await pool.execute(
-                        'insert into bd_blogs_listing (userid, title, body, excerpt, img_url, mode) values (:userid, :title, :body, :excerpt, :imgUrl, :mode)', {
-                            userid: req.session.userinfo.userid,
-                            title: blogtitle, 
-                            body: blogdescription,
-                            excerpt: blogexcerpt,
-                            imgUrl: secure_url,
-                            mode: 'auto'
-                        }
-                    );  
-                }
-                res.write("event: close\n");
-                res.write("data: Updated the database\n\n");
-                task.stop();
-            });
+            // check whether scheduled time goes less than current time while creating the blog
+            let formattedScheduledDate = new Date(autoBlogData[0].scheduled_on);
+            autoBlogData[0].scheduled_at = autoBlogData[0].scheduled_at.split(':');
+            const [hours, minutes, seconds] = autoBlogData[0].scheduled_at.map(number => number);
+            formattedScheduledDate.setHours(
+                formattedScheduledDate.getHours() + hours,
+                formattedScheduledDate.getMinutes() + minutes,
+                formattedScheduledDate.getSeconds() + seconds
+            );
+            const formattedScheduledTimeInMs = formattedScheduledDate.getTime();
+            const diff = formattedScheduledTimeInMs - new Date();
 
-            // process ends here
-            res.write("data: Finished! Your blog has been created successfully\n\n");
+            if(diff <= 0) {
+                res.write("event: error\n");
+                res.write("data: current time surpassed scheduled time while creating the blog. Please try again! \n\n");
+
+            } else {
+                // push the generated data on our db
+                const task = cron.schedule(cronExp, async () => {
+                    const blogtitle = aiBlogTitle.response.text();
+                    const blogdescription = aiBlogDescription.response.text();
+                    const blogexcerpt = aiBlogExcerpt.response.text();
+                    if(blogtitle && blogdescription && blogexcerpt) {
+                        await pool.execute(
+                            'insert into bd_blogs_listing (userid, title, body, excerpt, img_url, mode) values (:userid, :title, :body, :excerpt, :imgUrl, :mode)', {
+                                userid: req.session.userinfo.userid,
+                                title: blogtitle,
+                                body: blogdescription,
+                                excerpt: blogexcerpt,
+                                imgUrl: secure_url,
+                                mode: 'auto'
+                            }
+                        );
+                    }
+                    res.write("event: close\n");
+                    res.write("data: Updated the database\n\n");
+                    task.stop();
+                });
+
+                // process ends here
+                res.write("data: Finished! Your blog has been created successfully\n\n");
+            }
             
         } catch (error) {
             res.write("event: error\n");
