@@ -8,7 +8,7 @@ body{
 }
 
 #auto-create{
-    background:  rgba(40, 123, 200, .2) !important;
+    background:  #1c1c1c !important;
 }
 
 #create-blog{
@@ -50,8 +50,7 @@ body{
     height: fit-content;
     padding: 1rem;
     margin: 0 auto;
-    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-    background-color: #192435;
+    background-color: #1c1c1c;
     border-radius: 10px;
 }
 
@@ -78,7 +77,7 @@ body{
     background: transparent;
     color: white;
     border-radius: 10px;
-    border: 2px solid #385480;
+    border: 3px solid #414141;
     padding: .5rem;
     font-size: .8rem;
     outline: none;
@@ -92,7 +91,8 @@ body{
     background: transparent;
     color: white;
     border-radius: 10px;
-    border: 2px solid #385480;
+    border: 3px solid #414141;
+    outline: none;
 }
 
 
@@ -104,23 +104,24 @@ body{
 }
 
 #schedule, #reset{
-    width: 5rem;
-    padding: .3rem;
+    width: 6rem;
+    padding: .4rem;
     margin: 0 auto;
     margin: 0;
-    color: white;
-    border-radius: 10px;
-    font-size: .85rem;
+    color: #000;
+    border-radius: 10rem;
+    font-size: .9rem;
+    font-weight: bold;
 }
 
 #schedule{
-    background-color: #0a4eca;
-    border: 1px solid #0a4eca;
+    background-color: #25d865;
+    border: 1px solid #25d865;
 }
 
 #reset{
-    background-color:   #ff5400;;
-    border: 1px solid #ff5400;;
+    background-color: white;
+    border: 1px solid white;
 }
 
 /* error-text */
@@ -134,7 +135,7 @@ body{
 
 /* popup */
 .eventspopup{
-    background-color: #08203e;color:white;padding:1rem;border-radius: 7px;display: flex;flex-direction: column;gap:2rem;width: 27rem;position:absolute;z-index:101;display:none;top:2rem;left:calc(100vw - calc(50vw + 13.5rem));height:fit-content;
+    background-color: #1c1c1c;color:white;padding:1rem;border-radius: 7px;display: flex;flex-direction: column;gap:2rem;width: 27rem;position:absolute;z-index:101;display:none;top:6rem;left:calc(100vw - calc(50vw + 13.5rem));height:fit-content;
 }
 
 .eventmessage{
@@ -180,23 +181,25 @@ body{
 
 #canceleventpopup{
     padding:.5rem;
-    border:1px solid #003001;
-    border-radius: 5px;
+    border:1px solid #000;
+    border-radius: 10rem;
     width: 4rem;
-    font-weight: 600;
+    font-weight: bold;
     font-size: .7rem;
     display:block;
+    color: white;
+    cursor: auto;
 }
 
 .disablebtn{
-    color: #484848;
-    background-color: #7b7b7b;
+    color: white;
+    background-color: #000;
     cursor:auto;
 }
 
 .enablebtn{
-    background-color: #003001;
-    color:#0e975e;
+    background-color: #25d865;
+    color:#000;
     cursor: pointer;
 }
 
@@ -215,7 +218,7 @@ body{
 }
 
 .confirmpopupcontainer{
-    background-color: #08203e;color:white;padding:0rem;border-radius: 7px;display: flex;flex-direction: column;gap:2rem;width: 30vw;position:absolute;z-index:101;display:none;top:40vh;left:calc(100vw - (50vw + 15vw));
+    background-color: #414141;color:white;padding:0rem;border-radius: 7px;display: flex;flex-direction: column;gap:2rem;width: 30vw;position:absolute;z-index:101;display:none;top:40vh;left:calc(100vw - (50vw + 15vw));
 }
 
 .confirmpopupheader{
@@ -243,11 +246,11 @@ body{
 }
 
 #confirmok{
-    background-color: #003001;color:#0e975e;padding:.5rem;border:1px solid #003001;border-radius: 5px;cursor: pointer;width: 5rem;font-weight: 600;font-size: .75rem;
+    background-color: #25d865;color:#000;padding:.5rem;border:1px solid #25d865;border-radius: 10rem;cursor: pointer;width: 5rem;font-weight: bold;font-size: .8rem;
 }
 
 #confirmcancel{
-    background-color: #003001;color:#0e975e;padding:.5rem;border:1px solid #003001;border-radius: 5px;cursor: pointer;width: 5rem;font-weight: 600;font-size: .75rem;
+    background-color: #fff;color:#000;padding:.5rem;border:1px solid #fff;border-radius: 10rem;cursor: pointer;width: 5rem;font-weight: bold;font-size: .8rem;
 }
 
 .confirmcancel{

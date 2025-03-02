@@ -3,7 +3,7 @@
     position: sticky;
     top: 0;
     z-index: 1;
-    display: flex;justify-content: space-between;align-items: center;;background:rgba(0,12,34,.85);
+    display: flex;justify-content: space-between;align-items: center;;background:#000;
     height: 5rem;
     margin-bottom: 2rem;
     padding: 0 1.6rem;
@@ -42,7 +42,7 @@
 }
 
 .userinfo-topbar{
-    background-color: #192435;
+    background-color: #1c1c1c;
     width: 12rem;
     height: 3.8rem;
     border-radius: 100px;
@@ -93,7 +93,7 @@
 }
 
 .popupcontainer{
-    background-color: #08203e;color:white;padding:0rem;border-radius: 7px;display: flex;flex-direction: column;gap:2rem;width: 30vw;position:absolute;z-index:101;display:none;top:40vh;left:calc(100vw - (50vw + 15vw));
+    background-color: #414141;color:white;padding:0rem;border-radius: 7px;display: flex;flex-direction: column;gap:2rem;width: 30vw;position:absolute;z-index:101;display:none;top:40vh;left:calc(100vw - (50vw + 15vw));
 }
 
 .popupheader{
@@ -121,10 +121,10 @@
 }
 
 #popupcancel-no{
-    background-color: #280000;color:#ff9f9f;padding:.5rem;border:1px solid #280000;border-radius: 5px;cursor: pointer;width: 5rem;font-weight: 600;font-size: .75rem;
+    background-color: #fff;color:#000;padding:.4rem;border:1px solid #fff;border-radius: 10rem;cursor: pointer;width: 5rem;font-weight: bold;font-size: .8rem;letter-spacing: 2px;
 }
 
 .logoutconfirm{
-    background-color: #003001;color:#0e975e;padding:.5rem;border:1px solid #003001;border-radius: 5px;cursor: pointer;width: 5rem;font-weight: 600;font-size: .75rem;
+    background-color: #25d865;color:#000;padding:.4rem;border:1px solid #25d865;border-radius: 10rem;cursor: pointer;width: 5rem;font-weight: bold;font-size: .8rem;letter-spacing: 2px;
 }
 

@@ -53,7 +53,7 @@ document.querySelector('.about-edit')
     const overlay = document.getElementById('overlay');
 
     aboutSectionInput.disabled = false;
-    aboutSectionInput.style.borderBottom = '4px solid #385480';
+    aboutSectionInput.style.borderBottom = '4px solid #414141';
     aboutSectionInput.value = aboutSectionInput.placeholder;
     aboutSectionSave.disabled = false;
     aboutSectionSave.style.display = 'block';

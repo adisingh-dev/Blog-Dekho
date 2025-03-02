@@ -18,6 +18,7 @@ class BlogController {
             );
             responseJson.status = 200;
             responseJson.blogs = blogs;
+            responseJson.pattern = "";
             
         } catch (err) {
             return res.status(500).redirect('error500');
@@ -259,6 +260,7 @@ class BlogController {
             );
             responseJson.status = 200;
             responseJson.blogs = blogs;
+            responseJson.pattern = pattern;
 
         } catch (error) {
             return res.status(500).redirect('error500');

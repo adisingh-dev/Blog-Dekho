@@ -122,11 +122,11 @@
 }
 
 .likes{
-    background-color: #001c47;border-radius: 5rem;width: 6rem;height: 2.1rem;display: flex;align-items: center;justify-content: unset;justify-content: center;
+    background-color: #fff;border-radius: 5rem;width: 6rem;height: 2.1rem;display: flex;align-items: center;justify-content: unset;justify-content: center;
 }
 
 .likesicon-container{
-    width: 50%;border-right:1px solid #545454;height: 100%;display: flex;justify-content: center;align-items: center;
+    width: 50%;height: 100%;display: flex;justify-content: center;align-items: center;
 }
 
 .likesicon{
@@ -134,14 +134,14 @@
 }
 
 .likescount-container{
-    width: 50%;border-left:1px solid #545454;height: 100%;display: flex;justify-content: center;align-items: center;
+    width: 50%;height: 100%;display: flex;justify-content: center;align-items: center;
 }
 
 .likescount{
-    font-size: .9rem;margin:0;cursor:default;
+    font-size: .9rem;margin:0;cursor:default;color:black;
 }
 
 .manage-post{
-    color: black;font-weight: 600;padding:.4rem;background-color: white;border-radius: 100px;border:1px solid white;
+    color: black;font-weight: bold;padding:.4rem;background-color: #25d865;border-radius: 100px;border:1px solid #25d865;width: 6rem;
 }
 

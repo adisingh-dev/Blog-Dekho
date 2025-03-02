@@ -9,7 +9,7 @@
 }
 
 .errorpopupcontainer{
-    background-color: #08203e;color:white;padding:0rem;border-radius: 7px;display: flex;flex-direction: column;gap:2rem;width: 30vw;position:absolute;z-index:101;display:none;top:40vh;left:calc(100vw - (50vw + 15vw));
+    background-color: #414141;color:white;padding:0rem;border-radius: 7px;display: flex;flex-direction: column;gap:2rem;width: 30vw;position:absolute;z-index:101;display:none;top:40vh;left:calc(100vw - (50vw + 15vw));
 }
 
 .errorpopupheader{
@@ -37,5 +37,5 @@
 }
 
 #errorpopupcancel-ok{
-    background-color: #003001;color:#0e975e;padding:.5rem;border:1px solid #003001;border-radius: 5px;cursor: pointer;width: 3rem;font-weight: 600;font-size: .7rem;
+    background-color: #25d865;color:#000;padding:.5rem;border:1px solid #25d865;border-radius: 10rem;cursor: pointer;width: 3rem;font-weight: bold;font-size: .8rem;
 }

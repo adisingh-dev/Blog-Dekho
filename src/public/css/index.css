@@ -7,7 +7,7 @@ body{
 }
 
 #goto-home{
-    background:  rgba(40, 123, 200, .2) !important;
+    background:  #1c1c1c !important;
 }
 
 .index-content-container{   
@@ -79,7 +79,7 @@ body{
 }
 
 #search-value{
-    background-color: #192435;
+    background-color: #1c1c1c;
     color: white;
     width: 45vw;
     height: 2rem;
@@ -100,7 +100,7 @@ body{
     border-left: transparent;
     display: flex;
     justify-content: center;
-    background-color: #192435;
+    background-color: #1c1c1c;
     color: white;
 }
 

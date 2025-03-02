@@ -15,8 +15,8 @@
     <%- include('../components/generic_error_popup.ejs') %>
     <div class="index-container">
         <form action="/search_blog" method="get" id="search-blog">
-            <input type="text" name="pattern" id="search-value" placeholder="Search">
-            <button id='search-btn' type="submit"><img id='search-logo' src="/img/search.svg" alt="sdf"></button>
+            <input type="text" name="pattern" id="search-value" placeholder="Search" value="<%= responseJson.pattern%>">
+            <button id='search-btn' type="submit"><img id='search-logo' src="/img/search.svg" ></button>
         </form>
         <div class="index-content-container">
             <div id="blogs" class="grid">

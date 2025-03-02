@@ -30,7 +30,9 @@ function validateInput(eTarget) {
 document.getElementById('post-reset')
 .addEventListener('click', e => {
     tinymce.get("description").setContent("");
-    document.querySelector('#image-preview').src = "";
+    document.getElementById('header').setAttribute('value', "");
+    document.getElementById('excerpt').setAttribute('value', "");
+    document.getElementById('excerpt').textContent = "";
 });
 
 
