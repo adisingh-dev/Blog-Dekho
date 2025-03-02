@@ -36,7 +36,7 @@ router.post('/about', UserProfileController.aboutUser);
 router.post('/blogs/:id', checkInternet, uploader.single('featured'), validateInput, BlogController.createBlog);
 router.post('/userprofilepic', checkInternet, uploader.single('userprofilepic'), UserProfileController.profileImage);
 router.post('/blogs/:id/shorts', BlogController.getShortVideos);
-router.post('/auto_blog_data', checkInternet, validateInput, AutoBlogController.AutoBlogDetails);
+router.post('/auto_blog_data', checkInternet, AutoBlogController.AutoBlogDetails);
 
 // DELETE Routes
 router.delete('/blogs/delete/:id', BlogController.deleteBlog)

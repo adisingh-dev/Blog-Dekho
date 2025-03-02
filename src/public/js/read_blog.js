@@ -10,8 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('.errorpopupoverlay').style.display = 'none';
         });
     });
-    console.log(blogtitle.getAttribute('blogtitle'));
-    
     blogtitle.innerHTML = marked.parse(blogtitle.getAttribute('blogtitle'));
     blogbody.innerHTML = marked.parse(blogbody.getAttribute('blogbody'));
 });

@@ -70,7 +70,7 @@ class BlogController {
         }
         return res.status(201).json({
             userinfo: req.session.userinfo,
-            message: "blog created successfully"
+            message: "Your Blog has been Blog created successfully!"
         });
     }
 
@@ -313,7 +313,7 @@ class BlogController {
 
     // render auto blog create form
     static bdCreateBlogPage(req, res) {
-        return res.status(200).render('./blog/bd_create_blog_page', {
+        return res.status(200).render('./blog/auto_create_blog', {
             responseJson: {
                 userinfo: req.session.userinfo,
             }
