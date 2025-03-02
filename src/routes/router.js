@@ -2,7 +2,7 @@ import express from 'express';
 import BlogController from '../controllers/blog.controller.js'
 import AutoBlogController from '../controllers/autoblog.controller.js';
 import UserProfileController from '../controllers/userprofile.controller.js';
-import {uploader} from '../middlewares/fileUpload.js';
+import {uploader} from '../middlewares/fileuploader.middleware.js';
 import validateInput from '../middlewares/validateInput.js';
 import checkInternet from '../middlewares/checkInternet.js';
 

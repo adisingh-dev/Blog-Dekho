@@ -3,7 +3,7 @@ import path from 'path';
 dotenv.config({path: path.join(process.cwd(), '.env')});
 import axios from 'axios';
 import {pool} from '../db/config.js';
-import {uploadToCloud} from '../middlewares/fileUpload.js';
+import {uploadToCloud} from '../middlewares/fileuploader.middleware.js';
 
 class BlogController {
 

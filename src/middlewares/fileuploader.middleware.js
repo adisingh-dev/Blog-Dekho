@@ -32,7 +32,7 @@ cloudinary.config({
 
 const uploadToCloud = async (req) => {
     if(typeof req.file === 'undefined') {
-        return {status: 500, msg: 'a featured image is required'};
+        return {status: 500, message: 'a featured image is required'};
     }
 
     return new Promise((resolve, reject) => {
