@@ -40,12 +40,12 @@ class BlogController {
                 let [data] = await pool.query(`select img_url from bd_blogs_listing where id=:id`, {id: params.id});
 
                 // avoid reuploading same img. if given url already exist on db it means same img was uploaded before
-                query = 'update bd_blogs_listing set title=:title, body=:body, excerpt=:excerpt, updated_at=now()';
+                query = 'update bd_blogs_listing set title=:title, body=:body, excerpt=:excerpt, updated_at=now(), ';
                 if(data.length == 1 && data[0].img_url == params.featured) {
                     toUpload = false;
 
                 } else {
-                    query += 'img_url=:imgUrl ';
+                    query += ' img_url=:imgUrl ';
                 }
                 query += ' where id=:id';
                 

@@ -96,19 +96,9 @@ form.addEventListener('submit', async e => {
         document.getElementById('overlay').style.display = 'none';
         if(error.response) {
             verdict.textContent = error.response.data.message;
-            let imgwrapper = document.querySelector('#image-preview');
-            imgwrapper.style.border = '3px solid #385480';
-            for(let field of inputFields) {
-                field.style.border = '3px solid #385480';
-            }
 
         } else if(error.request) {
             verdict.textContent = 'Oops! Something went wrong. Please try again later';
-            let imgwrapper = document.querySelector('#image-preview');
-            imgwrapper.style.border = '3px solid #385480';
-            for(let field of inputFields) {
-                field.style.border = '3px solid #385480';
-            }
 
         } else if(typeof error == 'string') {
             verdict.textContent = error;
