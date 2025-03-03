@@ -7,8 +7,8 @@ Blog-Dekho is a server side fully backend content creation app that provides aut
 <img width="959" alt="Image" src="https://github.com/user-attachments/assets/c6267d54-2717-4399-a3b2-f89371a79390" />
 
 <div align="center">
-<img width="450" alt="Image" src="https://github.com/user-attachments/assets/aa29730b-2c8d-41d7-94a5-88b4007c6fe8" />
-<img width="450" alt="Image" src="https://github.com/user-attachments/assets/10405059-361d-4c55-9735-6871c94a2ef6" />
+<img width="400" alt="Image" src="https://github.com/user-attachments/assets/aa29730b-2c8d-41d7-94a5-88b4007c6fe8" />
+<img width="400" alt="Image" src="https://github.com/user-attachments/assets/10405059-361d-4c55-9735-6871c94a2ef6" />
 </div>
 
 <img width="959" alt="Image" src="https://github.com/user-attachments/assets/5aa08e78-f311-493a-a279-fb24ea81b07b" />
