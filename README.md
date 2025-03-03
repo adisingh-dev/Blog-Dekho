@@ -10,7 +10,7 @@ Blog-Dekho is a server side fully backend content creation app that provides aut
 <img width="959" alt="Image" src="https://github.com/user-attachments/assets/166ee03c-7c3a-4224-841e-603e5efddeac" />
 
 ## Tech Stack
-Javascript, NodeJS, ExpressJS, MySQL-DB, EJS template engine, CSS
+Javascript, NodeJS, ExpressJS, MySQL Database, EJS template engine, CSS
 
 ## Features
 * CRUD operations to manage a blog
