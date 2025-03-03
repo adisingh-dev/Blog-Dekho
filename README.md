@@ -1,7 +1,5 @@
 # Project Blog-Dekho
 Blog-Dekho is a server side fully backend content creation app that provides automation to create blogs using AI and schedule the blog upload at a desired time using cron job
-
-## Screenshots
 <img width="947" alt="Image" src="https://github.com/user-attachments/assets/cad7c8fe-ea64-4ac1-94e3-e2118fe158bd" />
 <img width="959" alt="Image" src="https://github.com/user-attachments/assets/c6267d54-2717-4399-a3b2-f89371a79390" />
 <div align="center">
