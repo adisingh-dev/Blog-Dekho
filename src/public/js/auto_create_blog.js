@@ -1,19 +1,23 @@
-const cancelbuttons = document.querySelectorAll('.confirmcancel');
-const errorcancelbuttons = document.querySelectorAll('.errorpopupcancel');
-// cancel confirmation popup
-cancelbuttons.forEach(button => {
-    button.addEventListener('click', () => {
-        document.querySelector('.confirmpopupoverlay').style.display = 'none';
-        document.querySelector('.confirmpopupcontainer').style.display = 'none';
+const mountCancelButtons = () => {
+    const cancelbuttons = document.querySelectorAll('.confirmcancel');
+    const errorcancelbuttons = document.querySelectorAll('.errorpopupcancel');
+    // cancel confirmation popup
+    cancelbuttons.forEach(button => {
+        button.addEventListener('click', () => {
+            document.querySelector('.confirmpopupoverlay').style.display = 'none';
+            document.querySelector('.confirmpopupcontainer').style.display = 'none';
+        });
     });
-});
-// cancel error popup
-errorcancelbuttons.forEach(button => {
-    button.addEventListener('click', () => {
-        document.querySelector('.errorpopupoverlay').style.display = 'none';
-        document.querySelector('.errorpopupcontainer').style.display = 'none';
+    // cancel error popup
+    errorcancelbuttons.forEach(button => {
+        button.addEventListener('click', () => {
+            document.querySelector('.errorpopupoverlay').style.display = 'none';
+            document.querySelector('.errorpopupcontainer').style.display = 'none';
+        });
     });
-});
+}
+
+
 // reset event popup progress icons after blog creation
 const resetProgressIcons = () => {
     const progressicons =  document.querySelectorAll('.event-progress');
@@ -25,9 +29,20 @@ const resetProgressIcons = () => {
     document.querySelector('.popupoverlay').style.display = 'none';
     document.querySelector('.eventspopup').style.display = 'none';
 };
-document.getElementById('canceleventpopup').addEventListener('click', resetProgressIcons);
-document.getElementById('errorpopupcancel-ok').addEventListener('click', resetProgressIcons);
 
+
+document.addEventListener('DOMContentLoaded', () => {
+    // set userprofile pic on navbar
+    document.querySelector('.profilepic').src = profilepic;
+    document.getElementById('welcome-username').textContent = username;
+    
+    // set popup cancel buttons
+    mountCancelButtons();
+    
+    // reset progress icons on popup removal
+    document.getElementById('canceleventpopup').addEventListener('click', resetProgressIcons);
+    document.getElementById('errorpopupcancel-ok').addEventListener('click', resetProgressIcons);
+});
 
 
 function validateInput(inp, regex) {
@@ -129,7 +144,7 @@ document.getElementById('schedule')
 async function automatePost(keywords, scheduledAt, scheduledOn) {
     // initialize event update modal
     try {
-        const res = await axios.post('/auto_blog_data', {
+        const res = await axios.post('/auto-blog', {
             keywords, scheduledAt, scheduledOn
         }, {
             headers: {
