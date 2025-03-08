@@ -8,6 +8,7 @@ import {usersession} from './src/db/config.js';
 import router from './src/routes/router.js';
 import Auth from './src/middlewares/auth.middleware.js';
 import AuthRouter from './src/routes/authrouter.js';
+import ErrorHandler from './src/middlewares/errorHandler.middleware.js';
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -25,6 +26,7 @@ app.use('/tinymce', express.static(path.join(import.meta.dirname, 'node_modules'
 app.use(AuthRouter);
 app.use(Auth);
 app.use(router);
+app.use(ErrorHandler);
 
 app.get("*", (req, res) => {
     res.send('404 Not Found! The resource you are looking does not exist. Please try again later');
