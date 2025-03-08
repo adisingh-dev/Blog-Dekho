@@ -29,7 +29,8 @@ const usersession = session({
     saveUninitialized: false,
     store: MySQLStore,
     cookie: {
-        maxAge: 7200000
+        maxAge: 7200000,
+        httpOnly: true
     }
 });
 
