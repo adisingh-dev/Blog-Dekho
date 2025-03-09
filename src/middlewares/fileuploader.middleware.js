@@ -1,5 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config({path: '../.env'});
 import path from 'node:path';
 import multer from 'multer';
 import {v2 as cloudinary} from 'cloudinary';
