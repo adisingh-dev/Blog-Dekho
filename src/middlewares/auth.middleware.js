@@ -1,25 +1,32 @@
-import path from 'node:path';
-import dotenv from 'dotenv';
-dotenv.config({path: path.join('/', '.env')});
-
 import jwt from 'jsonwebtoken';
+import axios from 'axios'
 
 
 const Auth = async (req, res, next) => {
     try {
-        const cookie = req.headers.cookie;
-        const cookiename = 'bearer_token';
-        const startidx = cookie.indexOf('bearer_token') + cookiename.length + 1;
-        let bearertoken = "";
-        for(let i = startidx; i < cookie.length; i++) {
-            if(cookie[i] == ';') break;
-            bearertoken += cookie[i];
-        }
+        const bearertoken = req.cookies.bearer_token;
         const tokendata = jwt.verify(bearertoken, process.env.TOKEN_SECRET);
+        
+        return (req.url == '/login' || req.url == '/register')? 
+        res.status(200).redirect('/home'): 
         next();
 
-    } catch (error) {
-        return res.redirect('/destroyUserSession');
+    } catch (err) {
+        if(req.url.startsWith("/api/v1/")) {
+            const error = new Error('Invalid token. Unauthorized access');
+            error.statusCode = 401;
+            return next(error);
+            
+        } else {
+            if(req.url == '/login' || req.url == '/register') return next();
+            await axios.delete(
+                `http://${process.env.HOST}:${process.env.SERVER_PORT}/api/v1/destroy-session`, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+            return res.status(200).redirect('/login');
+        }
     }
 }
 
