@@ -15,28 +15,17 @@
     <%- include('../components/navbar.ejs') %>    
     <script type="application/javascript" src="/tinymce/tinymce.min.js"></script>
     <script type="application/javascript" src="/js/tinymce_config.js"></script>
-    <%
-        let title = body = excerpt = imgUrl = "";
-        let action = "/blogs";
-        if(Object.keys(responseJson.blog).length > 0) {
-            title = (responseJson.blog.title)? responseJson.blog.title: "";
-            body = (responseJson.blog.body)? responseJson.blog.body: "";
-            excerpt = (responseJson.blog.excerpt)? responseJson.blog.excerpt: "";
-            imgUrl = (responseJson.blog.img_url)? responseJson.blog.img_url: "";
-            action = `/blogs/${responseJson.blog.id}`;
-        }
-    %>
     <div class="create-blog-wrapper">
-        <form action="<%= action %>" id="create-blog">
+        <form id="create-blog">
             <div class="upper">
                 <div class="first-half">
                     <div class="title-wrapper">
                         <label for="header" id="title-label">Title:</label>
-                        <input class='input-field' name="title" id="header" placeholder="Enter Blog Title" value="<%= title %>">
+                        <input class='input-field' name="title" id="header" placeholder="Enter Blog Title">
                     </div>
                     <div class="excerpt-wrapper">
                         <label for="excerpt" id="excerpt-label">Excerpt:</label>
-                        <textarea class='input-field' name="excerpt" id="excerpt" placeholder="Enter Excerpt"><%= excerpt %></textarea>
+                        <textarea class='input-field' name="excerpt" id="excerpt" placeholder="Enter Excerpt"></textarea>
                         <!-- upcoming feature -->
                         <!-- <div id="excerpt-mode">
                             <button id="custom-excerpt">Custom</button>
@@ -44,10 +33,9 @@
                         </div> -->
                     </div>
                     <div class="image-wrapper">
-                        <input type="hidden" name="hiddenPreview" id="hidden-input" value='<%= imgUrl %>' hidden>
                         <input type="file" name="featured" id="image-input" hidden>
                         <label for="image-input" id="image-input-label">Select File</label>
-                        <img id="image-preview" name="preview" src="<%= imgUrl %>"/>
+                        <img id="image-preview" name="preview"/>
                     </div>
                     <div id="lower">
                         <span id="verdict"></span>
@@ -64,7 +52,7 @@
                             <img id="loader-small-img" src="/assets/img/loader-small.svg" alt="">
                         </div>
                     </div>
-                    <textarea class='input-field' name="body" id="description" placeholder="Enter Body" blogbody="<%= body %>"></textarea>
+                    <textarea class='input-field' name="body" id="description" placeholder="Enter Body" ></textarea>
                 </div>
             </div> 
         </form>
@@ -76,5 +64,6 @@
 <script src="/js/marked.min.js"></script>
 <script src="/js/axios.min.js" type="text/javascript"></script>
 <script type="text/javascript">
+    const blogId = "<%= blogId %>";
 </script>
 <script src="/js/create_blog.js" type="text/javascript"></script>

@@ -23,7 +23,7 @@ document.querySelector('.userprofilepic-form')
     formdata.append('userprofilepic', event.target.userprofilepic.files[0]);
     try {
         document.getElementById('overlay').style.display = 'block';
-        const res = await axios.post('/userprofilepic', formdata, {
+        const res = await axios.post('/api/v1/profile-image', formdata, {
             headers: 'multipart/form-data'
         });
         document.querySelector('.verdict').textContent = 
@@ -61,8 +61,12 @@ document.querySelector('.about-edit')
     aboutSectionSave.addEventListener('click', async () => {
         try {
             overlay.style.display = 'block';
-            const res = await axios.post('/about', {
+            const res = await axios.post('/api/v1/about', {
                 'content': aboutSectionInput.value
+            }, {
+                headers: {
+                    "Content-Type": "application-json"
+                }
             });
             overlay.style.display = 'none';
             aboutSectionVerdict.textContent = res.data.message;

@@ -58,7 +58,7 @@ const mountEventSource = () => {
     document.getElementById('canceleventpopup').classList.remove('enablebtn');
     document.getElementById('canceleventpopup').classList.add('disablebtn');
     
-    const eventsource = new EventSource(`/stream_blog_updates`);
+    const eventsource = new EventSource(`/api/v1/auto-blog`);
     eventsource.addEventListener('close', () => {
         eventsource.close();
         const nthLi = document.querySelector(`#events li:nth-child(${++eventcounter})`);
@@ -144,7 +144,7 @@ document.getElementById('schedule')
 async function automatePost(keywords, scheduledAt, scheduledOn) {
     // initialize event update modal
     try {
-        const res = await axios.post('/auto-blog', {
+        const res = await axios.post('/api/v1/auto-blog', {
             keywords, scheduledAt, scheduledOn
         }, {
             headers: {

@@ -1,6 +1,3 @@
-import dotenv from 'dotenv';
-import path from 'path';
-dotenv.config({path: path.join(process.cwd(), '.env')});
 import {pool} from '../db/config.js';
 import { uploadToCloud } from '../middlewares/fileuploader.middleware.js';
 
@@ -16,9 +13,19 @@ class UserProfileController {
         });
     }
 
+    // show subscribed channel list
+    static renderAllSubscriptionsView(req, res) {
+        return res.status(200).render('./user/user_subscriptions');
+    }
+
+    // show liked blogs
+    static async renderLikedBlogs(req, res, next) {
+        return res.status(200).render('./user/user_liked_blogs');
+    }
+
 
     // render subscribed channels
-    static async renderAllSubscriptionsView(req, res) {
+    static async userSubscriptions(req, res) {
         let responseJson = {
             userinfo: req.session.userinfo
         };
@@ -42,20 +49,19 @@ class UserProfileController {
             responseJson.data = subscribedChannels[0];
             
         } catch (error) {
-            responseJson.status = 500;
-            responseJson.data = [];
+            const err = new Error();
+            next(err);
         }
-        return res.status(responseJson.status).render('./user/user_subscriptions', {responseJson});
+        res.status(responseJson.status).json(responseJson);
     }
 
-
-    // show liked blogs
-    static async renderLikedBlogs(req, res) {
+    
+    // get all liked blogs for the user
+    static async userLikes(req, res, next) {
         let responseJson = {
             userinfo: req.session.userinfo
         };
         try {
-            // get all liked blogs for the user
             const [likedBlogs] = await pool.query(
                 `select 
                     bl.id, bl.title, bl.excerpt, bl.body, bl.img_url, bl.mode
@@ -73,10 +79,11 @@ class UserProfileController {
             responseJson.blogs = likedBlogs;
 
         } catch (error) {
-            responseJson.status = 500;
-            return res.redirect('error500');
+            const err = new Error();
+            err.toRedirect = true;
+            next(err);
         }
-        return res.status(responseJson.status).render('./user/user_liked_blogs', {responseJson});
+        res.status(responseJson.status).json(responseJson);
     }
 
 

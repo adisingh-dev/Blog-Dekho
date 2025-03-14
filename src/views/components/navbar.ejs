@@ -9,9 +9,7 @@
         <p class="popuptext">Are you sure you want to logout?</p>
         <div class="popupactions">
             <button class="popupcancel" id="popupcancel-no">No</button>
-            <a href="/destroyUserSession" class="destroyusersession">
-                <button class="logoutconfirm">Yes</button>
-            </a>
+            <button class="logoutconfirm destroyusersession">Yes</button>
         </div>
     </div>
 </div>
@@ -23,25 +21,26 @@
         </a>
     </div>
     <div class="nav">
-        <a class="common-nav-btn" id="goto-home" href="/blogs">Home</a>
-        <a class="common-nav-btn" id="manual-create" href="/create_blog">Manual</a>
-        <a class="common-nav-btn" id="auto-create" href="/automate">Auto</a>
-        <a class="common-nav-btn" id="user-profile" href="/user_profile">My Profile</a>
-        <a class="common-nav-btn" id="all-subscriptions" href="/all_subscriptions">Following</a>
-        <a class="common-nav-btn" id="liked-blogs" href="/liked_blogs">Likes</a>
+        <a class="common-nav-btn" id="goto-home" href="/home">Home</a>
+        <a class="common-nav-btn" id="manual-create" href="/compose">Manual</a>
+        <a class="common-nav-btn" id="auto-create" href="/auto-compose">Auto</a>
+        <a class="common-nav-btn" id="user-profile" href="/user-profile">My Profile</a>
+        <a class="common-nav-btn" id="all-subscriptions" href="/user-subscriptions">Following</a>
+        <a class="common-nav-btn" id="liked-blogs" href="/liked-blogs">Likes</a>
     </div>
     <div class="right-container userinfo-topbar">
         <div class="leftpart">
-            <a href="/user_profile" class="pic">
-                <img src=<%= responseJson.userinfo.profilepic %> alt="" class="profilepic">
+            <a href="/user-profile" class="pic">
+                <img class="profilepic">
             </a>
-            <a href="/user_profile" class="nav-username">
+            <a href="/user-profile" class="nav-username">
                 <p class="welcome-text">Welcome</p> 
-                <p class="welcome-text"><%=responseJson.userinfo.username%></p>
+                <p class="welcome-text" id="welcome-username"></p>
             </a>
         </div>
         <img class="power" src="/assets/img/power.svg">
     </div>
 </div>
 
+<script src="/js/axios.min.js" type="text/javascript"></script>
 <script src="/js/navbar.js" type="text/javascript"></script>

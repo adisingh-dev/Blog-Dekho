@@ -16,11 +16,15 @@ document.getElementById('user-registeration-form')
 .addEventListener('submit', async (event) => {
     event.preventDefault();
     try {
-        const userRegisterationRes = await axios.post('/register', {
+        const userRegisterationRes = await axios.post('/api/v1/register', {
             username: event.target.username.value,
             email: event.target.email.value,
             password: event.target.password.value,
             confirmPassword: event.target.confirmpassword.value
+        }, {
+            Headers: {
+                "Content-Type": "application/json"
+            }
         });
         setVerdict(userRegisterationRes.data);
 

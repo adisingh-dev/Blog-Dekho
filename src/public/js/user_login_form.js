@@ -5,12 +5,16 @@ document.getElementById('user-login-form')
 .addEventListener('submit', async (event) => {
     event.preventDefault();
     try {
-        const userLoginRes = await axios.post('/login', {
+        const userLoginRes = await axios.post('/api/v1/login', {
             username: event.target.username.value,
             password: event.target.password.value
+        }, {
+            headers: {
+                "Content-Type": "application/json"
+            }
         });
         if(userLoginRes.data.token) {
-            window.location.href = '/blogs';
+            window.location.href = '/home';
         }
 
     } catch (error) {

@@ -1,34 +1,51 @@
-import dotenv from 'dotenv';
-import path from 'path';
-dotenv.config({path: path.join(process.cwd(), '.env')});
 import axios from 'axios';
 import {pool} from '../db/config.js';
 import {uploadToCloud} from '../middlewares/fileuploader.middleware.js';
 
 class BlogController {
 
+    static homePage(req, res) {
+        return res.status(200).render('./blog/index');
+    }
+
+    
     // fetch all blogs for index page
-    static async getAllBlogs(req, res) {
-        let responseJson = {
+    static async getAllBlogs(req, res, next) {
+        let {pattern} = req.query;
+        const responseJson = {
             userinfo: req.session.userinfo
         };
+
+        pattern = pattern? pattern.replace(/\s+/g, " "): "";
+        pattern = pattern? pattern.split(" "): "";
+        pattern = pattern? pattern.join(""): "";
+        pattern = pattern.toLowerCase();
         try {
             const [blogs] = await pool.query(
-                `select id, title, body, excerpt, img_url, mode from bd_blogs_listing order by updated_at desc`
+                `select id, title, body, excerpt, img_url, mode from bd_blogs_listing 
+                where 
+                    lower(regexp_replace(title, '\\\\s+', '')) like :pattern or
+                    lower(regexp_replace(excerpt, '\\\\s+', '')) like :pattern 
+                order by updated_at desc`, { 
+                    pattern: `%${pattern}%` 
+                }
             );
             responseJson.status = 200;
             responseJson.blogs = blogs;
-            responseJson.pattern = "";
-            
+            responseJson.pattern = pattern;
+
         } catch (err) {
-            return res.status(500).redirect('error500');
+            const error = new Error('Something went wrong');
+            error.statusCode = 500;
+            error.redirect = true;
+            return next(error);
         }
-        return res.status(responseJson.status).render('./blog/index', {responseJson});
+        return res.status(responseJson.status).json(responseJson);
     }
 
 
     // manually create blog
-    static async createBlog(req, res) {
+    static async createBlog(req, res, next) {
         let params = req.body;
         let toUpload=true;
         let query = "";
@@ -40,12 +57,12 @@ class BlogController {
                 let [data] = await pool.query(`select img_url from bd_blogs_listing where id=:id`, {id: params.id});
 
                 // avoid reuploading same img. if given url already exist on db it means same img was uploaded before
-                query = 'update bd_blogs_listing set title=:title, body=:body, excerpt=:excerpt, updated_at=now(), ';
+                query = 'update bd_blogs_listing set title=:title, body=:body, excerpt=:excerpt, updated_at=now() ';
                 if(data.length == 1 && data[0].img_url == params.featured) {
                     toUpload = false;
 
                 } else {
-                    query += ' img_url=:imgUrl ';
+                    query += ', img_url=:imgUrl ';
                 }
                 query += ' where id=:id';
                 
@@ -63,21 +80,27 @@ class BlogController {
             }
             await pool.execute(query, params);
             
-        } catch (error) {
-            return res.status(500).json({
-                userinfo: req.session.userinfo,
-                message: error
-            });
+        } catch (err) {
+            const error = new Error(err);
+            error.statusCode = 500;
+            error.redirect = true;
+            return next(error);
         }
         return res.status(201).json({
             userinfo: req.session.userinfo,
-            message: "Your Blog has been Blog created successfully!"
+            message: "Your Blog has been created successfully!"
         });
     }
 
 
+    static renderBlog(req, res) {
+        const {id} = req.params;
+        return res.status(200).render('./blog/read_blog', {blogid: id});
+    }
+
+
     // render blog content page
-    static async readBlog(req, res) {
+    static async getBlog(req, res, next) {
         const {id} = req.params;
         let responseJson = {
             userinfo: req.session.userinfo
@@ -87,7 +110,7 @@ class BlogController {
             const [blog] = await pool.query(
                 `select 
                     userid, date_format(bl.updated_at, "%d %M, %Y") as date_of_creation,
-                    bl.title, bl.body, bl.img_url
+                    bl.title, bl.excerpt, bl.body, bl.img_url
                 from bd_blogs_listing bl
                 where bl.id = :id`, {id}
             );
@@ -132,14 +155,15 @@ class BlogController {
                 id: id,
                 imgUrl: blog[0].img_url,
                 title: blog[0].title,
+                excerpt: blog[0].excerpt,
                 body: blog[0].body
             };
             
         } catch (error) {
-            responseJson.status = 500;
-            responseJson.message = "something went wrong";
+            const err = new Error();
+            next(err);
         }
-        res.status(responseJson.status).render('./blog/read_blog', {responseJson});
+        res.status(responseJson.status).json(responseJson);
     }
 
 
@@ -181,11 +205,13 @@ class BlogController {
             responseJson.status = 200;
             responseJson.likes = likes[0].totallikes;
 
-        } catch (error) {
-            responseJson.status = 500;
-            responseJson.message = "Something went wrong. Could not toggle the like";
+        } catch (err) {
+            const error = new Error('Something went wrong');
+            error.statusCode = 500;
+            error.redirect = true;
+            return next(error);
         }
-        res.status(responseJson.status).json(responseJson);
+        return res.status(responseJson.status).json(responseJson);
     }
 
 
@@ -232,40 +258,13 @@ class BlogController {
                 [out.videoids[randIdx], out.videoids[i]] = [out.videoids[i], out.videoids[randIdx]];
             }
 
-        } catch (error) {
-            out.status = 500;
-            out.msg = 'something went wrong';
+        } catch (err) {
+            const error = new Error('Something went wrong');
+            error.statusCode = 500;
+            error.redirect = true;
+            return next(error);
         }   
-        res.status(out.status).json(out);
-    }
-
-
-    // pattern matching for search feature
-    static async searchBlog(req, res) {
-        let {pattern} = req.query;
-        let responseJson = {
-            userinfo: req.session.userinfo
-        };
-        pattern = pattern.replace(/\s+/g, " ");
-        pattern = pattern.split(" ");
-        pattern = pattern.join("");
-        pattern = pattern.toLowerCase();
-
-        try {
-            const [blogs] = await pool.query(
-                `select * from bd_blogs_listing where
-                lower(regexp_replace(title, '\\\\s+', '')) like :pattern 
-                or lower(regexp_replace(excerpt, '\\\\s+', '')) like :pattern`,
-                {pattern: `%${pattern}%`}
-            );
-            responseJson.status = 200;
-            responseJson.blogs = blogs;
-            responseJson.pattern = pattern;
-
-        } catch (error) {
-            return res.status(500).redirect('error500');
-        }
-        return res.status(responseJson.status).render('./blog/index', {responseJson});
+        return res.status(out.status).json(out);
     }
 
 
@@ -287,29 +286,11 @@ class BlogController {
     }
 
 
-    // blog details for form to manually create blog
-    static async blogForm(req, res) {
-        let responseJson = {
-            userinfo: req.session.userinfo
-        };
-        if(req.params.id) {
-            try {
-                // get blog details while updating the blog or leave empty while creating blog 
-                const [data] = await pool.query(
-                    `select * from bd_blogs_listing where id = :id`,
-                    {id: req.params.id}
-                );
-                responseJson.status = 200;
-                responseJson.blog = data[0];
-                
-            } catch (error) {
-                return res.status(500).redirect('error500');
-            }
-        } else {
-            responseJson.status = 200;
-            responseJson.blog = {};
-        }
-        return res.status(responseJson.status).render('./blog/create_blog', {responseJson});
+    static renderBlogForm(req, res) {
+        const {id} = req.params;
+        return res.status(200).render('./blog/create_blog', {
+            blogId: id? id: ""
+        });
     }
 
 
