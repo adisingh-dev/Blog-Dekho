@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 
 
 class AuthController {
+    
     // destroy a session
     static destroySession(req, res, next) {
         res.clearCookie('bearer_token', {
@@ -16,20 +17,23 @@ class AuthController {
                     message: "Something went wrong. Please try again later"
                 });
             }
-            return res.redirect('/login');
+            return res.status(200).json({
+                statusCode: 200,
+                message: "Session destroyed successfully"
+            });
         });
     }
 
     
     // render login page
     static renderLoginView(req, res) {
-        res.render('./user/user_login_form');
+        return res.render('./user/user_login_form');
     }
 
     
     // render register page
     static renderRegisterationView(req, res) {                
-        res.render('./user/user_registeration_form');
+        return res.render('./user/user_registeration_form');
     }
 
     

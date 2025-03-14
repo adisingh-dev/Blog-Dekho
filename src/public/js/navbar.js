@@ -17,3 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+
+document.querySelector('.destroyusersession')
+.addEventListener('click', async () => {
+    await axios.delete('/api/v1/destroy-session', {
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+    window.location.href = '/login';
+});
