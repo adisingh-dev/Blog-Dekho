@@ -114,7 +114,7 @@ class AutoBlogController{
                 width: 800,
                 height: 512,
                 steps: 4,
-                n: 4,
+                n: 1,
                 response_format: "b64_json"
             });
             const imagebuffer = Buffer.from(response.data[0].b64_json, 'base64');
